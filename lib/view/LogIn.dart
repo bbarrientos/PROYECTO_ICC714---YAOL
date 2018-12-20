@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:yaol/network/LogInVal.dart';
 
+class LogIn extends StatefulWidget {
+  @override
+  _LogIn createState() => _LogIn();
+}
 
-class LogIn extends StatelessWidget {
+class _LogIn extends State<LogIn> {
+  LogInVal _logInVal = new LogInVal();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +90,10 @@ class LogIn extends StatelessWidget {
                 ),
                 
                 
-                onPressed: () {},
+                onPressed: () {
+                  _logInVal.signIn().then((user) => Navigator.pushNamed(context, "/mainView"));
+                  
+                },
               ),
             ),
             SizedBox(
