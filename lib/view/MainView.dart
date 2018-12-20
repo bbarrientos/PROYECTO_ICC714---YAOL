@@ -11,6 +11,7 @@ class _MainView extends State<MainView> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        bottomOpacity: 50.0,
         actions: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
