@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:yaol/network/Local.dart';
+
 class Map extends StatefulWidget {
   @override
   _Map createState() => _Map();
 }
 
 class _Map extends State<Map> {
-
+  //PopulateLocal pl = new PopulateLocal();
   bool mapToogle = false;
   var currentLocation;
+  GoogleMapController _googleMapController;
+  var local=[];
+
   @override
   void initState(){
     super.initState();
@@ -17,11 +23,36 @@ class _Map extends State<Map> {
       setState(() {
               currentLocation=currentlocation;
               mapToogle = true;
-            });
+              populateLocal();
+              });
     });
   }
+    populateLocal(){
 
-  GoogleMapController _googleMapController;
+    Firestore.instance.collection('markers').getDocuments().then((docs){
+      if(docs.documents.isNotEmpty){
+        for(int c=0;c< docs.documents.length;++c){
+          local.add(docs.documents[c].data);
+          initMarker(docs.documents[c].data);
+        }
+      }
+      //print(locals);
+      //return locals;
+    });
+  }
+  initMarker(local){
+    
+      _googleMapController.addMarker(
+        MarkerOptions(
+          position: LatLng(local['location'].latitude, local['location'].longitude),
+          draggable: false,
+          infoWindowText: InfoWindowText(local['LocalName'],'HOla')
+        )
+      );
+    
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +81,7 @@ class _Map extends State<Map> {
                     cameraPosition: CameraPosition(
                       target: LatLng(currentLocation.latitude,currentLocation.longitude),
                       
-                      zoom: 20.0
+                      zoom: 12.0
                     )
                   ),
                 ):
