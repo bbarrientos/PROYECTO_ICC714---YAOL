@@ -3,6 +3,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:yaol/network/Local.dart';
+import 'package:yaol/model/Local.dart';
+
+import 'package:yaol/view/MainViewClient.dart';
 
 class Map extends StatefulWidget {
   @override
@@ -10,6 +13,8 @@ class Map extends StatefulWidget {
 }
 
 class _Map extends State<Map> {
+
+  var localsDetails;
   //PopulateLocal pl = new PopulateLocal();
   bool mapToogle = false;
   var currentLocation;
@@ -25,9 +30,13 @@ class _Map extends State<Map> {
               mapToogle = true;
               populateLocal();
               });
+    
     });
+    // setState(() {
+    //       localsDetails = Local().getData();
+    //     });
   }
-    populateLocal(){
+  populateLocal(){
 
     Firestore.instance.collection('markers').getDocuments().then((docs){
       if(docs.documents.isNotEmpty){
@@ -46,13 +55,155 @@ class _Map extends State<Map> {
         MarkerOptions(
           position: LatLng(local['location'].latitude, local['location'].longitude),
           draggable: false,
-          infoWindowText: InfoWindowText(local['LocalName'],'HOla')
+          infoWindowText: InfoWindowText(local['LocalName'],'HOla'
+          ),
+          
+          //consumeTapEvents: _popUp(),
         )
       );
     
   }
 
+  // getLocalEntries(){
+  //   if (localsDetails != null) {
+  //     return StreamBuilder(
+  //       stream: localsDetails,
+  //       builder: (context, snapshot){
+  //         if (snapshot.data != null) {
+  //           return ListView.builder(
+  //             primary: false,
+  //             shrinkWrap: true,
+  //             itemCount: snapshot.data.documents.length,
+  //             itemBuilder: (context,c){
+  //                 return new Column(
+  //                 children: <Widget>[
+  //                   //_buildImageGrid(snapshot.data.documents[c].data['image']),
+  //                   _imgGalleryDetail(snapshot.data.documents[c].data['name'],
+  //                                     snapshot.data.documents[c].data['calle'],
+  //                                     //snapshot.data.documents[c].data['image']
+  //                                     )
+
+
+  //                   // _buildMenuCard(
+                                  
+  //                   //               snapshot.data.documents[c].data['id'],
+  //                   //               snapshot.data.documents[c].data['name'],
+  //                   //               //snapshot.data.documents[c].data['ingredients'],
+  //                   //               snapshot.data.documents[c].data['image'],
+  //                   //               snapshot.data.documents[c].data['price']),
+  //                 ],   
+  //               );
+  //             },
+  //           );
+  //         } else {
+  //           return new Text("Cargando");
+  //         }
+  //       },
+  //     );
+  //   }else{
+  //     return new Text('Cargando... Por favor esperer');
+  //   }
+  // }
   
+  // Widget _imgGalleryDetail(name,calle) {
+  //   //print(image[0]);
+  //   return Padding(
+  //     //padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 15.0),
+  //     child: Container(
+        
+  //       // child: Column(
+  //       //   //child: ,
+  //       //   children: <Widget>[
+  //       //     SizedBox(height: 20,),
+  //       //     Column(
+  //       //       children: <Widget>[
+  //       //         Container(
+  //       //           height: 225.0,
+  //       //        // width: MediaQuery.of(context).size.width / 2 + 40.0,
+  //       //           decoration: BoxDecoration(
+  //       //             borderRadius: BorderRadius.only(
+  //       //                 topLeft: Radius.circular(15.0),
+  //       //                 topRight: Radius.circular(15.0),
+
+  //       //                 bottomLeft: Radius.circular(15.0),
+  //       //                 bottomRight: Radius.circular(15.0),
+  //       //                 ),
+  //       //             image: DecorationImage(
+  //       //               image: NetworkImage(image[0]),
+  //       //                 //Image.network(image[0]),
+  //       //                 //image: NetworkImage(image[0]),
+  //       //                 fit: BoxFit.cover)),
+  //       //         ),
+  //       //         SizedBox(height: 15,)
+  //       //       ],
+  //       //     ),
+  //           Row(   
+  //             children: <Widget>[
+  //               Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: <Widget>[
+  //                   Text(
+  //                     name,
+  //                     style: TextStyle(
+  //                       fontSize: 15.0),
+  //                   ),
+  //                   SizedBox(height: 7.0),
+  //                   Row(
+  //                     children: <Widget>[
+  //                       Text(
+  //                         'Precio: ${calle}',
+  //                         style: TextStyle(
+  //                             color: Colors.grey.shade700,
+                              
+  //                             fontSize: 11.0),
+  //                       ),
+  //                       SizedBox(width: 4.0),
+  //                       Icon(
+  //                         Icons.timer,
+  //                         size: 4.0,
+  //                         color: Colors.black,
+  //                       ),
+  //                       SizedBox(width: 4.0),
+  //                       Text(
+  //                         '2h ago',
+  //                         style: TextStyle(
+  //                             color: Colors.grey.shade500,
+                              
+  //                             fontSize: 11.0),
+  //                       )
+  //                     ],
+  //                   )
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ],
+  //       ),
+        
+  //     ),
+  //   );
+  // }
+
+  // Widget _popUp(){
+  //   print("object");
+  //   return SimpleDialog(
+  //     title: const Text("Locales"),
+  //     children: <Widget>[
+  //       SimpleDialogOption(
+  //         child: const Text("Gohan"),
+  //         onPressed: (){
+
+  //            var route = new MaterialPageRoute(
+  //                 builder: (BuildContext context) =>
+  //                     new MainViewClient(restaurant: 'Gohan'),
+  //               );
+  //           Navigator.of(context).push(route);
+  //         },
+  //       ),
+  //      // getLocalEntries(),
+  //     ],
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +226,9 @@ class _Map extends State<Map> {
                     _googleMapController = controller;           
                 // });
                   },
+                  //gestureRecognizers: ,
                   options: GoogleMapOptions(
+
                     compassEnabled: true,
                     //mapType: ,
                     cameraPosition: CameraPosition(
@@ -83,6 +236,7 @@ class _Map extends State<Map> {
                       
                       zoom: 12.0
                     )
+
                   ),
                 ):
                 Center(
@@ -150,7 +304,42 @@ class _Map extends State<Map> {
     //     ));
     //   },
     // ),          
-        
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.ac_unit),
+        onPressed: (){
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => SimpleDialog(
+              title: const Text('Locales'),
+              children: <Widget>[
+                SimpleDialogOption(
+                  child: const Text("Gohan"),
+                  onPressed: (){
+
+                    var route = new MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              new MainViewClient(restaurant: 'Gohan'),
+                        );
+                    Navigator.of(context).push(route);
+                  },
+                ),
+                SimpleDialogOption(
+                  child: const Text("Nari Sushi"),
+                  onPressed: (){
+
+                    var route = new MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              new MainViewClient(restaurant: 'NariSushi'),
+                        );
+                    Navigator.of(context).push(route);
+                  },
+                ),
+              // getLocalEntries(),
+              ],
+            )
+          );
+        },
+      ),
 
         
       

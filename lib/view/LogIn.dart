@@ -91,7 +91,7 @@ class _LogIn extends State<LogIn> {
                 
                 
                 onPressed: () {
-                  Navigator.pushNamed(context, '/mainViewClient');
+                  Navigator.pushNamed(context, '/map');
                   //_logInVal.signIn().then((user) => Navigator.pushNamed(context, "/mainView"));
                   
                 },
