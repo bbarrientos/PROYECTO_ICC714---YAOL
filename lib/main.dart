@@ -5,6 +5,7 @@ import 'package:yaol/view/LogIn.dart';
 import 'package:yaol/view/Map.dart';
 import 'package:yaol/view/MainView.dart';
 import 'package:yaol/view/MainViewClient.dart';
+import 'package:yaol/view/UserSettings.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,6 +31,10 @@ class MyApp extends StatelessWidget {
           );
           case '/mainViewClient': return new CustomRoute(
             builder: (_) => new MainViewClient(),
+            settings: settings,
+          );
+          case '/userSettings': return new CustomRoute(
+            builder: (_) => new UserSettings(),
             settings: settings,
           );
         }

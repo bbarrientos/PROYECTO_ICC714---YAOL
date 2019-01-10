@@ -1,19 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:yaol/network/Local.dart';
 import 'package:yaol/model/Local.dart';
-
+import 'package:yaol/network/LogInVal.dart';
 import 'package:yaol/view/MainViewClient.dart';
 
+import 'package:yaol/view/UserSettings.dart';
+
 class Map extends StatefulWidget {
+  String userid;
+
+  Map({Key key, this.userid}) : super(key: key);
+
   @override
   _Map createState() => _Map();
 }
 
 class _Map extends State<Map> {
-
+  
+  LogInVal _logInVal = new LogInVal();
   var localsDetails;
   //PopulateLocal pl = new PopulateLocal();
   bool mapToogle = false;
@@ -23,6 +31,7 @@ class _Map extends State<Map> {
 
   @override
   void initState(){
+   // print("HOlaaaaaaaaaaaaaaaaaaaaaaaaaaaa  ${LogInVal().getCurrentUser()} ");
     super.initState();
     Geolocator().getCurrentPosition().then((currentlocation){
       setState(() {
@@ -246,64 +255,7 @@ class _Map extends State<Map> {
             ],
           )
         ],
-      ),
-
-      // appBar: AppBar(
-      //   bottomOpacity: 50.0,
-      //   actions: <Widget>[
-      //     Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: <Widget>[
-      //         IconButton(
-      //           icon: Icon(Icons.search),
-      //           onPressed: (){
-
-      //           },
-      //         ),
-      //         IconButton(
-      //           icon: Icon(Icons.map),
-      //           onPressed: (){
-
-      //           },
-      //         )
-      //       ],
-      //     )
-      //   ],
-      // ),
-    //   body: Container(
-    //         height: double.infinity,
-    //         width: double.infinity,
-    //         child: GoogleMap(
-    //           onMapCreated: (controller){
-    //             // setState(() {
-    //               _googleMapController = controller;           
-    //             // });
-    //           },
-    //           options: GoogleMapOptions(
-    //             compassEnabled: true,
-    //             //mapType: ,
-    //             cameraPosition: CameraPosition(
-    //               target: LatLng(-38.740, -72.598),
-                  
-    //               zoom: 13.2
-    //             )
-    //           ),
-    //         ),
-            
-    //     ),
-    // floatingActionButton: IconButton(
-    //   icon: Icon(Icons.add_circle_outline),
-    //   color: Colors.red,
-    //   onPressed: _googleMapController == null ? null : () {
-    //     _googleMapController.animateCamera(CameraUpdate.newCameraPosition(
-    //       CameraPosition(
-    //           target: LatLng(-33.4489, -70.6693),
-    //           zoom: 13.2,
-    //           tilt: 30.0
-    //       )
-    //     ));
-    //   },
-    // ),          
+      ),         
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.ac_unit),
         onPressed: (){
@@ -340,10 +292,55 @@ class _Map extends State<Map> {
           );
         },
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.only(left: 15.0,  top: 34.0),
+          children: <Widget>[
+            //SizedBox(height: 100,),
+            ListTile(
+              title: new FutureBuilder<FirebaseUser>(
+                future: FirebaseAuth.instance.currentUser(),
+                builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot){
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return new Text(snapshot.data.displayName);
+                  } else {
+                    return new Text('Cargando');
+                  }
+                },
+              ),
+              onTap: (){
+                    Navigator.pushNamed(context, '/userSettings');
+
+              
+                
+                   
+              },
+            ),
+            SizedBox(height: 15,),
+            ListTile(
+              title: const Text("Cerrar Sesion"),
+              onTap: (){
+                _logInVal.singOut();
+                Navigator.pushNamed(context, '/');
+              },
+            ),
+          ],
+        ),
+      ),
 
         
       
     );
+    // new FutureBuilder<FirebaseUser>(
+    //   future: FirebaseAuth.instance.currentUser(),
+    //   builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot){
+    //     if (snapshot.connectionState == ConnectionState.done) {
+    //       return new Text(snapshot.data.uid);
+    //     } else {
+    //       return new Text('Cargando');
+    //     }
+    //   },
+    // );
   }
 
   // void _showUserProfile(Firebase user){
